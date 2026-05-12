@@ -4,7 +4,9 @@ window.onload = function() {
     const ctx3D = canvas3D.getContext('2d');
     const ctxPlanta = canvasPlanta.getContext('2d');
 
+    const inputs = document.querySelectorAll('input');
     const buttons = document.querySelectorAll('.mat-btn');
+
     buttons.forEach(btn => {
         btn.onclick = function() {
             buttons.forEach(b => b.classList.remove('active'));
@@ -14,26 +16,24 @@ window.onload = function() {
         };
     });
 
+    inputs.forEach(inp => inp.oninput = procesar);
+
     function procesar() {
-        // Ajustar resolución del canvas al tamaño real visible
-        canvas3D.width = canvas3D.offsetWidth;
-        canvas3D.height = canvas3D.offsetHeight;
-        canvasPlanta.width = canvasPlanta.offsetWidth;
-        canvasPlanta.height = canvasPlanta.offsetHeight;
+        canvas3D.width = canvas3D.clientWidth;
+        canvas3D.height = canvas3D.clientHeight;
+        canvasPlanta.width = canvasPlanta.clientWidth;
+        canvasPlanta.height = canvasPlanta.clientHeight;
 
         const ld = parseFloat(document.getElementById('longDer').value) || 0;
         const li = parseFloat(document.getElementById('longIzq').value) || 0;
         const hi = parseFloat(document.getElementById('hInicial').value) || 0;
-        const h1 = parseFloat(document.getElementById('hInter1').value) || 0;
-        const h2 = parseFloat(document.getElementById('hInter2').value) || 0;
         const hf = parseFloat(document.getElementById('hFinal').value) || 0;
         const wb = parseFloat(document.getElementById('wBase').value) || 0;
         const dens = parseFloat(document.getElementById('tipoMaterial').value) || 2.0;
 
         const lMax = Math.max(ld, li);
         const lProm = (ld + li) / 2;
-        const hProm = (hi + h1 + h2 + hf) / 4;
-        
+        const hProm = (hi + hf) / 2;
         const toneladas = (wb * lProm * hProm) * dens;
         const pendiente = lProm > 0 ? ((hf - hi) / lProm) * 100 : 0;
 
@@ -46,82 +46,69 @@ window.onload = function() {
         }
     }
 
-    function dibujar3D(ctx, hi, hf, wb, ld, li, largoMax) {
+    function dibujar3D(ctx, hi, hf, wb, ld, li, lMax) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        const ESCALA = Math.min(25, (ctx.canvas.width * 0.4) / (largoMax/2 + wb/2));
-        const vpx = ctx.canvas.width * 0.2;
-        const vpy = ctx.canvas.height * 0.5;
-        const esRecto = Math.abs(ld - li) < 0.01;
-        const radioM = esRecto ? 0 : (wb * (li + ld)) / (2 * (ld - li));
-        const angT = esRecto ? 0 : (ld - li) / wb;
-        
+        const ESCALA = Math.min((ctx.canvas.width * 0.45) / (wb + lMax*0.5), (ctx.canvas.height * 0.45) / (hf + 2));
+        const vpx = ctx.canvas.width / 2;
+        const vpy = ctx.canvas.height / 1.6;
+
         let historial = [];
         for (let i = 0; i <= 20; i++) {
             let p = i / 20;
-            let t = angT * p;
-            let zL = esRecto ? (p * (ld+li)/2) : Math.abs(radioM * Math.sin(t));
-            let xL = esRecto ? 0 : radioM * (Math.cos(t) - 1);
-            let hVisual = hi + (hf - hi) * p;
-
+            let hVis = hi + (hf - hi) * p;
+            let zL = p * lMax;
             let pts = [
-                {x: xL-wb/2, y: 2 + hVisual, z: zL}, 
-                {x: xL+wb/2, y: 2 + hVisual, z: zL}, 
-                {x: xL+wb/2, y: 2, z: zL}, 
-                {x: xL-wb/2, y: 2, z: zL}
+                {x: -wb/2, y: 2 + hVis, z: zL}, {x: wb/2, y: 2 + hVis, z: zL}, 
+                {x: wb/2, y: 2, z: zL}, {x: -wb/2, y: 2, z: zL}
             ];
-
             let proj = pts.map(pt => proyectar(pt, vpx, vpy, ESCALA));
             historial.push(proj);
 
-            ctx.globalAlpha = (i===0 || i===20) ? 1 : 0.3;
-            ctx.strokeStyle = "#ffffff"; 
-            ctx.lineWidth = (i===0 || i===20) ? 2 : 0.5;
+            ctx.globalAlpha = (i===0 || i===20) ? 1 : 0.2;
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = (i===0 || i===20) ? 1.5 : 0.5;
             ctx.beginPath();
             proj.forEach((pt,idx) => idx===0?ctx.moveTo(pt.x,pt.y):ctx.lineTo(pt.x,pt.y));
             ctx.closePath(); ctx.stroke();
         }
 
-        ctx.globalAlpha = 1;
-        ctx.font = "bold 11px Arial";
-        ctx.fillStyle = "#27ae60";
+        // Medidas de Altura
+        ctx.globalAlpha = 1; ctx.font = "bold 10px Arial"; ctx.fillStyle = "#27ae60";
         ctx.fillText(`H: ${hi}m`, historial[0][1].x + 10, historial[0][1].y + 10);
         ctx.fillText(`H: ${hf}m`, historial[20][1].x + 10, historial[20][1].y + 10);
+        
+        // Líneas de color (Entrada/Salida)
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#3498db"; ctx.beginPath(); ctx.moveTo(historial[0][2].x, historial[0][2].y); ctx.lineTo(historial[0][3].x, historial[0][3].y); ctx.stroke();
+        ctx.strokeStyle = "#e74c3c"; ctx.beginPath(); ctx.moveTo(historial[20][2].x, historial[20][2].y); ctx.lineTo(historial[20][3].x, historial[20][3].y); ctx.stroke();
     }
 
-    function dibujarPlanta(ctx, wb, ld, li, largoMax) {
+    function dibujarPlanta(ctx, wb, ld, li, lMax) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        const padding = 40; 
-        const ESCALA_P = Math.min((ctx.canvas.height - padding*2) / largoMax, (ctx.canvas.width - padding*2) / (wb * 1.5));
+        const padding = 40;
+        const ESCALA_P = Math.min((ctx.canvas.width - 100) / (wb * 1.5), (ctx.canvas.height - padding*2) / lMax);
         
         ctx.save();
-        ctx.translate(ctx.canvas.width/2, ctx.canvas.height - padding);
+        ctx.translate(ctx.canvas.width / 2, ctx.canvas.height - padding);
         
-        if (Math.abs(ld - li) < 0.01) {
-            const w = wb * ESCALA_P, h = ld * ESCALA_P;
-            dibujarCapaPlanta(ctx, -w/2, 0, w/2, 0, w/2, -h, -w/2, -h);
-        } else {
-            const radioM = (wb * (li + ld)) / (2 * (ld - li));
-            const angT = (ld - li) / wb;
-            const R = Math.abs(radioM) * ESCALA_P;
-            const Wp = wb * ESCALA_P;
-            const dir = radioM > 0 ? -1 : 1;
-            const cx = dir * R;
-            const sA = dir === -1 ? 0 : Math.PI;
-            const eA = sA - angT;
+        const w = wb * ESCALA_P;
+        const hd = ld * ESCALA_P;
+        const hi = li * ESCALA_P;
 
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = "#ff9f43"; ctx.beginPath(); ctx.arc(cx, 0, R+Wp/2, sA, eA, radioM > 0); ctx.stroke();
-            ctx.strokeStyle = "#a29bfe"; ctx.beginPath(); ctx.arc(cx, 0, R-Wp/2, sA, eA, radioM > 0); ctx.stroke();
-        }
+        // Dibujo de Planta con colores
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#3498db"; ctx.beginPath(); ctx.moveTo(-w/2, 0); ctx.lineTo(w/2, 0); ctx.stroke(); // Base
+        ctx.strokeStyle = "#ff9f43"; ctx.beginPath(); ctx.moveTo(w/2, 0); ctx.lineTo(w/2, -hd); ctx.stroke(); // Der
+        ctx.strokeStyle = "#e74c3c"; ctx.beginPath(); ctx.moveTo(w/2, -hd); ctx.lineTo(-w/2, -hi); ctx.stroke(); // Tope
+        ctx.strokeStyle = "#a29bfe"; ctx.beginPath(); ctx.moveTo(-w/2, -hi); ctx.lineTo(-w/2, 0); ctx.stroke(); // Izq
+
+        // Etiquetas de Medidas
+        ctx.font = "bold 11px Arial"; ctx.textAlign = "center";
+        ctx.fillStyle = "#ff9f43"; ctx.fillText(`${ld}m`, w/2 + 25, -hd/2);
+        ctx.fillStyle = "#a29bfe"; ctx.fillText(`${li}m`, -w/2 - 25, -hi/2);
+        ctx.fillStyle = "#ffffff"; ctx.fillText(`Ancho: ${wb}m`, 0, 20);
+        
         ctx.restore();
-    }
-
-    function dibujarCapaPlanta(ctx, x1, y1, x2, y2, x3, y3, x4, y4) {
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#3498db"; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        ctx.strokeStyle = "#ff9f43"; ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x3, y3); ctx.stroke();
-        ctx.strokeStyle = "#e74c3c"; ctx.beginPath(); ctx.moveTo(x3, y3); ctx.lineTo(x4, y4); ctx.stroke();
-        ctx.strokeStyle = "#a29bfe"; ctx.beginPath(); ctx.moveTo(x4, y4); ctx.lineTo(x1, y1); ctx.stroke();
     }
 
     function proyectar(pt, vpx, vpy, ESCALA) {
@@ -129,19 +116,14 @@ window.onload = function() {
         let z1 = -pt.x * 0.7 + pt.z * 0.7;
         let y2 = pt.y * 0.9 - z1 * 0.3;
         let z2 = pt.y * 0.3 + z1 * 0.9;
-        let f = 500 / (500 + z2);
+        let f = 400 / (400 + z2);
         return { x: vpx + x1 * ESCALA * f, y: vpy + y2 * ESCALA * f };
     }
 
-    // --- ESCUCHADORES DE EVENTOS ---
-    document.querySelectorAll('input').forEach(inp => inp.oninput = procesar);
-    
-    // Redibujar cuando el usuario termina de deslizar en el móvil
-    const slider = document.querySelector('.viewport-slider');
-    let timer;
-    slider.addEventListener('scroll', () => {
-        clearTimeout(timer);
-        timer = setTimeout(procesar, 150);
+    // Redibujar al deslizar
+    document.querySelector('.viewport-slider').addEventListener('scroll', () => {
+        clearTimeout(window.t);
+        window.t = setTimeout(procesar, 100);
     });
 
     window.onresize = procesar;

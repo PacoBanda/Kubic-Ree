@@ -8,8 +8,7 @@
 </head>
 <body>
     <div class="viewport-slider">
-        
-        <section class="slide-section" id="panel-datos">
+        <section class="slide-section" id="seccion-datos">
             <div class="sidebar">
                 <h3>Control de Rebaje</h3>
                 <div class="grid-inputs">
@@ -47,26 +46,23 @@
                     <div class="vol-val"><span id="resMasa">0</span> <small>Ton</small></div>
                     <div id="resPendiente" class="info-pend">Pendiente: 0%</div>
                 </div>
-                <div class="swipe-hint">Desliza para ver gráficos ➔</div>
+                <div class="swipe-hint">DESLIZA PARA VER DIBUJOS ➔</div>
             </div>
         </section>
 
-        <section class="slide-section">
-            <div class="card">
-                <small>VISTA ISOMÉTRICA (3D)</small>
-                <canvas id="canvas3D"></canvas>
+        <section class="slide-section" id="seccion-dibujos">
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <small>VISTA ISOMÉTRICA (3D)</small>
+                    <canvas id="canvas3D"></canvas>
+                </div>
+                <div class="canvas-wrapper">
+                    <small>PLANTA SUPERIOR (CENITAL)</small>
+                    <canvas id="canvasPlanta"></canvas>
+                </div>
             </div>
         </section>
-
-        <section class="slide-section">
-            <div class="card">
-                <small>PLANTA SUPERIOR (CENITAL)</small>
-                <canvas id="canvasPlanta"></canvas>
-            </div>
-        </section>
-
     </div>
-
     <script src="./JS/rebajes.js"></script>
 </body>
 </html>
