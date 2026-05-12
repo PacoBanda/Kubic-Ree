@@ -15,10 +15,11 @@ window.onload = function() {
     });
 
     function procesar() {
-        canvas3D.width = canvas3D.clientWidth;
-        canvas3D.height = canvas3D.clientHeight;
-        canvasPlanta.width = canvasPlanta.clientWidth;
-        canvasPlanta.height = canvasPlanta.clientHeight;
+        // Ajustar resolución del canvas al tamaño real visible
+        canvas3D.width = canvas3D.offsetWidth;
+        canvas3D.height = canvas3D.offsetHeight;
+        canvasPlanta.width = canvasPlanta.offsetWidth;
+        canvasPlanta.height = canvasPlanta.offsetHeight;
 
         const ld = parseFloat(document.getElementById('longDer').value) || 0;
         const li = parseFloat(document.getElementById('longIzq').value) || 0;
@@ -46,6 +47,7 @@ window.onload = function() {
     }
 
     function dibujar3D(ctx, hi, hf, wb, ld, li, largoMax) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         const ESCALA = Math.min(25, (ctx.canvas.width * 0.4) / (largoMax/2 + wb/2));
         const vpx = ctx.canvas.width * 0.2;
         const vpy = ctx.canvas.height * 0.5;
@@ -79,28 +81,17 @@ window.onload = function() {
             ctx.closePath(); ctx.stroke();
         }
 
-        // --- ALTURAS (POSICIÓN SOLICITADA) ---
         ctx.globalAlpha = 1;
         ctx.font = "bold 11px Arial";
         ctx.fillStyle = "#27ae60";
-        ctx.fillText(`H: ${hi}m`, historial[0][1].x + 15, historial[0][1].y + 15);
-        ctx.fillText(`H: ${hf}m`, historial[20][1].x + 15, historial[20][1].y + 15);
-        
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = "#3498db"; ctx.beginPath(); ctx.moveTo(historial[0][2].x, historial[0][2].y); ctx.lineTo(historial[0][3].x, historial[0][3].y); ctx.stroke();
-        ctx.strokeStyle = "#e74c3c"; ctx.beginPath(); ctx.moveTo(historial[20][2].x, historial[20][2].y); ctx.lineTo(historial[20][3].x, historial[20][3].y); ctx.stroke();
+        ctx.fillText(`H: ${hi}m`, historial[0][1].x + 10, historial[0][1].y + 10);
+        ctx.fillText(`H: ${hf}m`, historial[20][1].x + 10, historial[20][1].y + 10);
     }
 
     function dibujarPlanta(ctx, wb, ld, li, largoMax) {
-        // ZOOM DINÁMICO MEJORADO
-        const padding = 50; 
-        const cotaSpace = 80; // Espacio extra para las etiquetas exteriores
-        
-        const availableW = ctx.canvas.width - cotaSpace;
-        const availableH = ctx.canvas.height - padding * 2;
-        
-        // Escala que se adapta al tamaño del canvas
-        const ESCALA_P = Math.min(availableH / largoMax, availableW / (wb * 1.2));
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        const padding = 40; 
+        const ESCALA_P = Math.min((ctx.canvas.height - padding*2) / largoMax, (ctx.canvas.width - padding*2) / (wb * 1.5));
         
         ctx.save();
         ctx.translate(ctx.canvas.width/2, ctx.canvas.height - padding);
@@ -108,9 +99,6 @@ window.onload = function() {
         if (Math.abs(ld - li) < 0.01) {
             const w = wb * ESCALA_P, h = ld * ESCALA_P;
             dibujarCapaPlanta(ctx, -w/2, 0, w/2, 0, w/2, -h, -w/2, -h);
-            ctx.font = "bold 12px Arial"; ctx.textAlign = "center";
-            ctx.fillStyle = "#ff9f43"; ctx.fillText(`${ld}m`, w/2 + 35, -h/2);
-            ctx.fillStyle = "#a29bfe"; ctx.fillText(`${li}m`, -w/2 - 35, -h/2);
         } else {
             const radioM = (wb * (li + ld)) / (2 * (ld - li));
             const angT = (ld - li) / wb;
@@ -121,41 +109,15 @@ window.onload = function() {
             const sA = dir === -1 ? 0 : Math.PI;
             const eA = sA - angT;
 
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = ld > li ? "#ff9f43" : "#a29bfe";
-            ctx.beginPath(); ctx.arc(cx, 0, R+Wp/2, sA, eA, radioM > 0); ctx.stroke();
-            ctx.strokeStyle = ld > li ? "#a29bfe" : "#ff9f43";
-            ctx.beginPath(); ctx.arc(cx, 0, R-Wp/2, sA, eA, radioM > 0); ctx.stroke();
-            
-            ctx.strokeStyle = "#3498db"; ctx.beginPath(); ctx.moveTo(cx+(R+Wp/2)*Math.cos(sA), (R+Wp/2)*Math.sin(sA)); ctx.lineTo(cx+(R-Wp/2)*Math.cos(sA), (R-Wp/2)*Math.sin(sA)); ctx.stroke();
-            ctx.strokeStyle = "#e74c3c"; ctx.beginPath(); ctx.moveTo(cx+(R+Wp/2)*Math.cos(eA), (R+Wp/2)*Math.sin(eA)); ctx.lineTo(cx+(R-Wp/2)*Math.cos(eA), (R-Wp/2)*Math.sin(eA)); ctx.stroke();
-
-            ctx.font = "bold 11px Arial"; ctx.textAlign = "center";
-            const angMedio = sA - angT / 2;
-            const offsetCota = 35;
-
-            ctx.save();
-            ctx.translate(cx + (R + Wp/2 + offsetCota) * Math.cos(angMedio), (R + Wp/2 + offsetCota) * Math.sin(angMedio));
-            ctx.rotate(angMedio + Math.PI/2);
-            ctx.fillStyle = ld > li ? "#ff9f43" : "#a29bfe";
-            ctx.fillText(`${Math.max(ld, li)}m`, 0, 0);
-            ctx.restore();
-
-            ctx.save();
-            ctx.translate(cx + (R - Wp/2 - offsetCota) * Math.cos(angMedio), (R - Wp/2 - offsetCota) * Math.sin(angMedio));
-            ctx.rotate(angMedio + Math.PI/2);
-            ctx.fillStyle = ld > li ? "#a29bfe" : "#ff9f43";
-            ctx.fillText(`${Math.min(ld, li)}m`, 0, 0);
-            ctx.restore();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = "#ff9f43"; ctx.beginPath(); ctx.arc(cx, 0, R+Wp/2, sA, eA, radioM > 0); ctx.stroke();
+            ctx.strokeStyle = "#a29bfe"; ctx.beginPath(); ctx.arc(cx, 0, R-Wp/2, sA, eA, radioM > 0); ctx.stroke();
         }
-
-        ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
-        ctx.fillText(`Ancho: ${wb}m`, 0, 20);
         ctx.restore();
     }
 
     function dibujarCapaPlanta(ctx, x1, y1, x2, y2, x3, y3, x4, y4) {
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.strokeStyle = "#3498db"; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
         ctx.strokeStyle = "#ff9f43"; ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x3, y3); ctx.stroke();
         ctx.strokeStyle = "#e74c3c"; ctx.beginPath(); ctx.moveTo(x3, y3); ctx.lineTo(x4, y4); ctx.stroke();
@@ -171,7 +133,17 @@ window.onload = function() {
         return { x: vpx + x1 * ESCALA * f, y: vpy + y2 * ESCALA * f };
     }
 
+    // --- ESCUCHADORES DE EVENTOS ---
     document.querySelectorAll('input').forEach(inp => inp.oninput = procesar);
+    
+    // Redibujar cuando el usuario termina de deslizar en el móvil
+    const slider = document.querySelector('.viewport-slider');
+    let timer;
+    slider.addEventListener('scroll', () => {
+        clearTimeout(timer);
+        timer = setTimeout(procesar, 150);
+    });
+
     window.onresize = procesar;
     procesar();
 };
