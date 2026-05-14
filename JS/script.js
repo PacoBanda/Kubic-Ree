@@ -12,45 +12,40 @@ function goToSlide(index) {
     dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
 }
 
-// Navegación por flechas (Teclado)
+// Navegación teclado
 document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') goToSlide(currentIndex + 1);
     if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
 });
 
-// --- NUEVA NAVEGACIÓN TÁCTIL (SWIPE) REFORZADA ---
-let touchStartX = 0;
-let touchStartY = 0;
+// --- MOTOR DE NAVEGACIÓN MÓVIL (SWIPE) ---
+let tStartX = 0;
+let tStartY = 0;
 
-// Escuchamos el inicio del toque en todo el documento
-document.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
+// Escuchamos el inicio del toque en el contenedor principal
+slider.addEventListener('touchstart', e => {
+    // Si el toque NO es en una caja de números, guardamos posición para swipe
+    if (!e.target.closest('.gestural-box')) {
+        tStartX = e.changedTouches[0].screenX;
+        tStartY = e.changedTouches[0].screenY;
+    }
 }, {passive: true});
 
-document.addEventListener('touchend', e => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const touchEndY = e.changedTouches[0].screenY;
+slider.addEventListener('touchend', e => {
+    if (isDragging) return; // Si estamos ajustando un número, no navegamos
     
-    // Solo disparamos el cambio de pantalla si NO estamos arrastrando un valor
-    if (!isDragging) {
-        handleSwipe(touchStartX, touchEndX, touchStartY, touchEndY);
+    const tEndX = e.changedTouches[0].screenX;
+    const tEndY = e.changedTouches[0].screenY;
+    
+    const dx = tStartX - tEndX;
+    const dy = tStartY - tEndY;
+
+    // Solo si el movimiento es predominantemente horizontal y largo
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
+        if (dx > 0) goToSlide(currentIndex + 1);
+        else goToSlide(currentIndex - 1);
     }
 }, {passive: true});
-
-function handleSwipe(startX, endX, startY, endY) {
-    const diffX = startX - endX;
-    const diffY = startY - endY;
-    const threshold = 50; // Sensibilidad del swipe
-
-    // Comprobamos que el movimiento sea más horizontal que vertical
-    if (Math.abs(diffX) > Math.abs(diffY)) {
-        if (Math.abs(diffX) > threshold) {
-            if (diffX > 0) goToSlide(currentIndex + 1); // Izquierda
-            else goToSlide(currentIndex - 1); // Derecha
-        }
-    }
-}
 
 // --- SELECTOR DENSIDAD REBAJE ---
 function setDensity(val, btnId) {
@@ -67,9 +62,12 @@ let activeBox = null;
 let startX, startY, baseE, baseD;
 
 document.querySelectorAll('.gestural-box').forEach(box => {
+    // Mouse
     box.addEventListener('mousedown', e => onStart(e, box, e.clientX, e.clientY));
+    
+    // Touch - Aquí es donde ajustamos el valor
     box.addEventListener('touchstart', e => {
-        // Detenemos la propagación para que el swipe global no se active al tocar una caja
+        // Evitamos que el toque se propague al slider (navegación)
         e.stopPropagation(); 
         onStart(e, box, e.touches[0].clientX, e.touches[0].clientY);
     }, {passive: false});
@@ -90,9 +88,9 @@ function onMove(x, y) {
     const dx = x - startX;
     const dy = startY - y;
 
-    // Sensibilidad baja solicitada (60px y 100px)
+    // Sensibilidad: 60px/unidad, 100px/0.1 decimal
     let nE = baseE + Math.round(dy / 60); 
-    let nD = baseD + (Math.round(dx / 100) * 0.1);
+    let nD = baseD + (Math.round(dx / 60) * 0.1);
     
     nE = Math.max(0, Math.min(100, nE));
     nD = Math.max(0, Math.min(0.9, nD));
@@ -111,12 +109,13 @@ function onEnd() {
     activeBox = null;
 }
 
+// Eventos globales para soltar/mover
 window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
 window.addEventListener('mouseup', onEnd);
 
 window.addEventListener('touchmove', e => {
     if (isDragging) {
-        // Bloquea el movimiento de la pantalla solo cuando estamos ajustando un valor
+        // Si estamos en una caja, bloqueamos el scroll de la página
         if (e.cancelable) e.preventDefault();
         onMove(e.touches[0].clientX, e.touches[0].clientY);
     }
@@ -165,9 +164,7 @@ function calcRebaje() {
 }
 
 function calcRecorte() {
-    const a = getVal('rec_anch');
-    const l = getVal('rec_lng');
-    const h = getVal('rec_alt');
+    const a = getVal('rec_anch'), l = getVal('rec_lng'), h = getVal('rec_alt');
     const total = Math.ceil(a * l * h);
     const target = document.getElementById('res_recorte');
     if(target) target.innerText = `${total} Tn`;
