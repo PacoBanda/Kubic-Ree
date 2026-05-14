@@ -1,108 +1,46 @@
-* {
-    box-sizing: border-box;
-    margin: 0; padding: 0;
-    -webkit-tap-highlight-color: transparent;
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Segoe UI', sans-serif; background-color: #000; color: #fff; overflow: hidden; }
+
+.slider-container { display: flex; width: 300vw; height: 100vh; transition: transform 0.4s ease-out; }
+.slide { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
+
+.card { 
+    background: #1a1a1a; width: 100%; max-width: 400px; padding: 20px; 
+    border-radius: 24px; display: flex; flex-direction: column; border: 1px solid #333; 
 }
 
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #000;
-    color: #fff;
-    overflow: hidden;
+h2 { color: #03dac6; text-align: center; margin-bottom: 10px; font-size: 1.4rem; letter-spacing: 1px; }
+
+.material-selector { display: flex; gap: 8px; margin-bottom: 15px; }
+.mat-btn { 
+    flex: 1; background: #222; border: 1px solid #444; color: #666; 
+    padding: 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; 
 }
+.mat-btn.active { border-color: #03dac6; color: #03dac6; background: #03dac610; }
 
-.slider-container {
-    display: flex;
-    width: 300vw;
-    height: 100vh;
-    transition: transform 0.4s ease-out;
-}
-
-.slide {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-}
-
-.card {
-    background: #1a1a1a;
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    border-radius: 24px;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #333;
-}
-
-h2 { color: #03dac6; text-align: center; margin-bottom: 5px; font-size: 1.4rem; letter-spacing: 1px; }
-
-.section-label { 
-    font-size: 0.6rem; 
-    color: #666; 
-    margin: 12px 0 6px 0; 
-    text-transform: uppercase; 
-    letter-spacing: 1px;
-}
-
+.section-label { font-size: 0.6rem; color: #555; margin: 10px 0 5px; text-transform: uppercase; letter-spacing: 1px; }
 .input-grid { display: flex; gap: 10px; margin-bottom: 8px; }
 
-.gestural-box {
-    flex: 1;
-    background: #222;
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 12px 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    touch-action: none;
-    user-select: none;
-    transition: all 0.2s;
+.gestural-box { 
+    flex: 1; background: #222; border: 1px solid #333; border-radius: 12px; 
+    padding: 12px 5px; display: flex; flex-direction: column; align-items: center; 
+    touch-action: none; user-select: none; transition: 0.2s; 
 }
-
 .gestural-box.full { margin-bottom: 10px; padding: 20px; }
-
-.gestural-box.active {
-    border-color: #03dac6;
-    background: #03dac615;
-    transform: scale(1.03);
-    box-shadow: 0 0 15px rgba(3, 218, 198, 0.1);
-}
+.gestural-box.active { border-color: #03dac6; background: #03dac610; transform: scale(1.02); }
 
 .gestural-box label { font-size: 0.6rem; color: #03dac6; margin-bottom: 4px; font-weight: bold; }
 .gestural-box .val { font-size: 1.4rem; font-weight: bold; color: #fff; }
 
-/* CONTENEDOR DE RESULTADO (Sustituye al botón) */
-.result-container {
-    margin-top: 15px;
-    padding: 15px;
-    background: #252525;
-    border-radius: 16px;
-    text-align: center;
-    border: 1px solid #333;
+.result-container { 
+    margin-top: 15px; padding: 15px; background: #252525; 
+    border-radius: 18px; text-align: center; border: 1px solid #333; 
 }
-
-.result-label {
-    display: block;
-    font-size: 0.65rem;
-    color: #03dac6;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.result { 
-    font-size: 1.8rem; 
-    color: #fff; 
-    font-weight: bold;
-}
+.result-label { display: block; font-size: 0.65rem; color: #03dac6; margin-bottom: 5px; font-weight: bold; }
+.result { font-size: 1.8rem; color: #fff; font-weight: bold; }
 
 .image-footer img { max-height: 50px; filter: invert(1); opacity: 0.4; display: block; margin: 15px auto 0; }
 
 .dots { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
-.dot { width: 6px; height: 6px; background: #444; border-radius: 50%; transition: 0.3s; }
-.dot.active { background: #03dac6; width: 22px; border-radius: 3px; }
+.dot { width: 6px; height: 6px; background: #333; border-radius: 50%; transition: 0.3s; }
+.dot.active { background: #03dac6; width: 20px; border-radius: 3px; }

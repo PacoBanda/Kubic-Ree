@@ -1,41 +1,32 @@
-// --- NAVEGACIÓN ---
+// --- ESTADO GLOBAL ---
 let currentIndex = 0;
+let currentDensity = 2.0;
 const slider = document.getElementById('slider');
 const dots = document.querySelectorAll('.dot');
 
+// --- NAVEGACIÓN ---
 function goToSlide(index) {
-    if (index < 0) index = 0;
-    if (index > 2) index = 2;
+    if (index < 0 || index > 2) return;
     currentIndex = index;
     slider.style.transform = `translateX(-${currentIndex * 100}vw)`;
     dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
 }
 
-// Navegación teclado
-window.addEventListener('keydown', e => {
+document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') goToSlide(currentIndex + 1);
     if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
 });
 
-// Swipe navegación
-let touchStartX = 0;
-window.addEventListener('touchstart', e => {
-    if (!e.target.closest('.gestural-box')) {
-        touchStartX = e.changedTouches[0].screenX;
-    }
-}, {passive: true});
+// --- SELECTOR DENSIDAD REBAJE ---
+function setDensity(val, btnId) {
+    currentDensity = val;
+    document.querySelectorAll('.mat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(btnId).classList.add('active');
+    document.getElementById('label_rebaje').innerText = `TOTAL REBAJE (D: ${val})`;
+    calcRebaje();
+}
 
-window.addEventListener('touchend', e => {
-    if (e.target.closest('.gestural-box')) return;
-    let touchEndX = e.changedTouches[0].screenX;
-    let diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 80) {
-        if (diff > 0) goToSlide(currentIndex + 1);
-        else goToSlide(currentIndex - 1);
-    }
-}, {passive: true});
-
-// --- MOTOR GESTUAL TIEMPO REAL ---
+// --- MOTOR GESTUAL ---
 let isDragging = false;
 let activeBox = null;
 let startX, startY, baseE, baseD;
@@ -49,8 +40,7 @@ function onStart(e, box, x, y) {
     isDragging = true;
     activeBox = box;
     activeBox.classList.add('active');
-    startX = x;
-    startY = y;
+    startX = x; startY = y;
     const v = parseFloat(activeBox.querySelector('.val').innerText) || 0;
     baseE = Math.floor(v);
     baseD = v - baseE;
@@ -58,23 +48,20 @@ function onStart(e, box, x, y) {
 
 function onMove(x, y) {
     if (!isDragging || !activeBox) return;
-
     const dx = x - startX;
     const dy = startY - y;
 
-    let nE = baseE + Math.round(dy / 50);
-    let nD = baseD + (Math.round(dx / 30) * 0.1);
-
+    let nE = baseE + Math.round(dy / 8); 
+    let nD = baseD + (Math.round(dx / 10) * 0.1);
     nE = Math.max(0, Math.min(100, nE));
     nD = Math.max(0, Math.min(0.9, nD));
 
     activeBox.querySelector('.val').innerText = (nE + nD).toFixed(1);
 
-    // Disparar cálculos según sección
-    const id = activeBox.dataset.id;
+    const id = activeBox.getAttribute('data-id');
     if (id.startsWith('av')) calcAvance();
-    else if (id.startsWith('re')) calcRebaje(2.0); 
-    else if (id.startsWith('rec')) calcRecorte();
+    if (id.startsWith('re')) calcRebaje(); 
+    if (id.startsWith('rec')) calcRecorte();
 }
 
 function onEnd() {
@@ -93,22 +80,20 @@ window.addEventListener('touchmove', e => {
 }, {passive: false});
 window.addEventListener('touchend', onEnd);
 
-// --- CÁLCULOS ---
+// --- LÓGICA DE CÁLCULO ---
 function getVal(id) {
     const box = document.querySelector(`.gestural-box[data-id="${id}"]`);
-    return box ? parseFloat(box.querySelector('.val').innerText) : 0;
+    return box ? (parseFloat(box.querySelector('.val').innerText) || 0) : 0;
 }
 
 function calcAvance() {
     const lI = getVal('av_lI'), lD = getVal('av_lD');
     let lMedia = (lI + lD) / ((lI > 0 ? 1 : 0) + (lD > 0 ? 1 : 0) || 1);
-
     let hSum = 0, hm = 0;
     ['av_h1','av_h2','av_h3','av_h4','av_h5','av_h6'].forEach(id => {
         let v = getVal(id); if(v > 0) { hSum += v; hm++; }
     });
     let altMedia = (hm === 0) ? 5.1 : (hSum / hm);
-
     let aSum = 0, am = 0;
     ['av_a1','av_a2','av_a3'].forEach(id => {
         let v = getVal(id); if(v > 0) { aSum += v; am++; }
@@ -119,27 +104,28 @@ function calcAvance() {
     document.getElementById('res_avance').innerText = `${total} Tn`;
 }
 
-function calcRebaje(densidad) {
+function calcRebaje() {
     const lI = getVal('re_lI'), lD = getVal('re_lD');
     let lMedia = (lI + lD) / ((lI > 0 ? 1 : 0) + (lD > 0 ? 1 : 0) || 1);
-
     let hSum = 0, hm = 0;
-    ['re_h1','re_h2','re_h3','re_h4','re_h5','re_h6'].forEach(id => {
+    ['re_h1','re_h2','re_h3'].forEach(id => {
         let v = getVal(id); if(v > 0) { hSum += v; hm++; }
     });
     let altMedia = (hm === 0) ? 2.0 : (hSum / hm);
-
     let aSum = 0, am = 0;
     ['re_a1','re_a2','re_a3'].forEach(id => {
         let v = getVal(id); if(v > 0) { aSum += v; am++; }
     });
     let anchoMedia = (am === 0) ? 8.0 : (aSum / am);
 
-    let total = Math.ceil(lMedia * anchoMedia * altMedia * densidad);
+    let total = Math.ceil(lMedia * anchoMedia * altMedia * currentDensity);
     document.getElementById('res_rebaje').innerText = `${total} Tn`;
 }
 
 function calcRecorte() {
-    const anch = getVal('rec_anch'), lng = getVal('rec_lng'), alt = getVal('rec_alt');
-    document.getElementById('res_recorte').innerText = `${Math.ceil(lng * anch * alt)} Tn`;
+    const a = getVal('rec_anch');
+    const l = getVal('rec_lng');
+    const h = getVal('rec_alt');
+    const total = Math.ceil(a * l * h);
+    document.getElementById('res_recorte').innerText = `${total} Tn`;
 }
