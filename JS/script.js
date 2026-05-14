@@ -51,7 +51,7 @@ function setDensity(val, btnId) {
     currentDensity = val;
     document.querySelectorAll('.mat-btn').forEach(b => b.classList.remove('active'));
     document.getElementById(btnId).classList.add('active');
-    document.getElementById('label_rebaje').innerText = `TOTAL REBAJE (D: ${val})`;
+    
     calcRebaje();
 }
 
