@@ -1,10 +1,10 @@
 // --- ESTADO GLOBAL ---
 let currentIndex = 0;
-let currentDensity = 2.0;
+let currentDensity = 2.0; // Firme por defecto
 const slider = document.getElementById('slider');
 const dots = document.querySelectorAll('.dot');
 
-// --- NAVEGACIÓN ---
+// --- NAVEGACIÓN (FLECHAS Y SWIPE) ---
 function goToSlide(index) {
     if (index < 0 || index > 2) return;
     currentIndex = index;
@@ -16,6 +16,25 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') goToSlide(currentIndex + 1);
     if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
 });
+
+// Navegación táctil (Swipe)
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (!isDragging) handleSwipe(); // Solo navega si no estamos moviendo un valor
+}, {passive: true});
+
+function handleSwipe() {
+    const swipeThreshold = 80;
+    if (touchStartX - touchEndX > swipeThreshold) goToSlide(currentIndex + 1);
+    if (touchEndX - touchStartX > swipeThreshold) goToSlide(currentIndex - 1);
+}
 
 // --- SELECTOR DENSIDAD REBAJE ---
 function setDensity(val, btnId) {
@@ -33,7 +52,9 @@ let startX, startY, baseE, baseD;
 
 document.querySelectorAll('.gestural-box').forEach(box => {
     box.addEventListener('mousedown', e => onStart(e, box, e.clientX, e.clientY));
-    box.addEventListener('touchstart', e => onStart(e, box, e.touches[0].clientX, e.touches[0].clientY), {passive: false});
+    box.addEventListener('touchstart', e => {
+        onStart(e, box, e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive: false});
 });
 
 function onStart(e, box, x, y) {
@@ -51,9 +72,7 @@ function onMove(x, y) {
     const dx = x - startX;
     const dy = startY - y;
 
-    // --- AJUSTE DE RECORRIDO LARGO ---
-    // dy/60 significa que mueves 60px para cambiar 1 entero
-    // dx/100 significa que mueves 100px para cambiar 0.1 decimal
+    // Recorrido largo: 60px para 1 unidad, 100px para 0.1 decimal
     let nE = baseE + Math.round(dy / 60); 
     let nD = baseD + (Math.round(dx / 100) * 0.1);
     
@@ -131,8 +150,6 @@ function calcRecorte() {
     const l = getVal('rec_lng');
     const h = getVal('rec_alt');
     const total = Math.ceil(a * l * h);
-    
-    // Forzamos actualización inmediata
     const target = document.getElementById('res_recorte');
     if(target) target.innerText = `${total} Tn`;
 }
