@@ -1,4 +1,4 @@
-// --- NAVEGACIÓN ---
+// --- SISTEMA DE NAVEGACIÓN ---
 let currentIndex = 0;
 const slider = document.getElementById('slider');
 const dots = document.querySelectorAll('.dot');
@@ -17,7 +17,7 @@ window.addEventListener('keydown', e => {
     if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
 });
 
-// Swipe Móvil (Navegación)
+// Swipe Móvil (Solo si no estamos arrastrando una caja)
 let touchStartX = 0;
 window.addEventListener('touchstart', e => {
     if (!e.target.closest('.gestural-box')) {
@@ -35,7 +35,7 @@ window.addEventListener('touchend', e => {
     }
 }, {passive: true});
 
-// --- CONTROL GESTUAL DIRECTO ---
+// --- CONTROL GESTUAL + TIEMPO REAL ---
 let isDragging = false;
 let activeBox = null;
 let startX, startY, baseE, baseD;
@@ -63,15 +63,31 @@ function onMove(x, y) {
     const dx = x - startX;
     const dy = startY - y;
 
+    // Sensibilidad: 15px para subir un entero, 20px para un decimal
     let nE = baseE + Math.round(dy / 15);
     let nD = baseD + (Math.round(dx / 20) * 0.1);
 
+    // Límites
     nE = Math.max(0, Math.min(100, nE));
     nD = Math.max(0, Math.min(0.9, nD));
 
-    activeBox.querySelector('.val').innerText = (nE + nD).toFixed(1);
+    const finalVal = (nE + nD).toFixed(1);
+    activeBox.querySelector('.val').innerText = finalVal;
+
+    // EJECUTAR CÁLCULO EN TIEMPO REAL
+    const id = activeBox.dataset.id;
+    if (id.startsWith('av')) calcAvance();
+    else if (id.startsWith('re')) calcRebaje(2.0); // 2.0 por defecto en real time
+    else if (id.startsWith('rec')) calcRecorte();
 }
 
+function onEnd() {
+    if (activeBox) activeBox.classList.remove('active');
+    isDragging = false;
+    activeBox = null;
+}
+
+// Listeners Globales
 window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
 window.addEventListener('mouseup', onEnd);
 window.addEventListener('touchmove', e => {
@@ -82,13 +98,8 @@ window.addEventListener('touchmove', e => {
 }, {passive: false});
 window.addEventListener('touchend', onEnd);
 
-function onEnd() {
-    if (activeBox) activeBox.classList.remove('active');
-    isDragging = false;
-    activeBox = null;
-}
+// --- FUNCIONES DE CÁLCULO ---
 
-// --- CÁLCULOS ---
 function getVal(id) {
     const box = document.querySelector(`.gestural-box[data-id="${id}"]`);
     return box ? parseFloat(box.querySelector('.val').innerText) : 0;

@@ -31,54 +31,79 @@ body {
     background: #1a1a1a;
     width: 100%;
     max-width: 400px;
-    padding: 20px;
+    padding: 15px 20px;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
 }
 
-h2 { color: #03dac6; text-align: center; margin-bottom: 5px; }
+h2 { color: #03dac6; text-align: center; margin-bottom: 5px; font-size: 1.5rem; }
 
-.section-label { font-size: 0.65rem; color: #888; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+.section-label { 
+    font-size: 0.6rem; 
+    color: #888; 
+    margin: 10px 0 4px 0; 
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+}
 
 .input-grid { display: flex; gap: 8px; margin-bottom: 6px; }
 
+/* CAJA TÁCTIL */
 .gestural-box {
     flex: 1;
     background: #222;
     border: 1px solid #333;
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 12px;
+    padding: 10px 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     touch-action: none;
     user-select: none;
+    transition: all 0.2s;
 }
 
-.gestural-box.full { margin-bottom: 10px; padding: 15px; }
+.gestural-box.full { margin-bottom: 8px; padding: 18px; }
 
 .gestural-box.active {
     border-color: #03dac6;
     background: #03dac615;
+    transform: scale(1.02);
 }
 
-.gestural-box label { font-size: 0.6rem; color: #03dac6; margin-bottom: 2px; }
-.gestural-box .val { font-size: 1.2rem; font-weight: bold; }
+.gestural-box label { font-size: 0.6rem; color: #03dac6; margin-bottom: 3px; }
+.gestural-box .val { font-size: 1.3rem; font-weight: bold; }
 
+/* BOTONES */
 button {
     width: 100%; padding: 14px; border-radius: 12px; border: none;
     background: #03dac6; font-weight: bold; margin-top: 10px; color: #000;
+    transition: opacity 0.3s, transform 0.1s;
+    opacity: 0.7;
 }
 
 .button-row { display: flex; gap: 8px; }
 .btn-relleno { background: #cf6679; }
 
-.result { text-align: center; font-size: 1.3rem; color: #03dac6; margin: 12px 0; font-weight: bold; }
+/* Iluminar botones cuando se interactúa */
+.gestural-box.active ~ button,
+.gestural-box.active ~ .button-row button {
+    opacity: 1;
+}
 
-.image-footer img { max-height: 60px; filter: invert(1); opacity: 0.7; display: block; margin: 5px auto; }
+.result { 
+    text-align: center; 
+    font-size: 1.6rem; 
+    color: #03dac6; 
+    margin: 15px 0; 
+    font-weight: bold; 
+    text-shadow: 0 0 10px rgba(3, 218, 198, 0.3);
+}
 
-.dots { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+.image-footer img { max-height: 60px; filter: invert(1); opacity: 0.6; display: block; margin: 5px auto; }
+
+.dots { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
 .dot { width: 6px; height: 6px; background: #444; border-radius: 50%; transition: 0.3s; }
-.dot.active { background: #03dac6; width: 18px; border-radius: 3px; }
+.dot.active { background: #03dac6; width: 20px; border-radius: 3px; }
