@@ -3,66 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calculador de Rebaje Pro</title>
-    <link rel="stylesheet" href="./CSS/rebaje.css">
+    <title>Kubicar Web</title>
+    <link rel="stylesheet" href="./CSS/style.css">
 </head>
 <body>
-    <div class="viewport-slider">
-        <section class="slide-section" id="seccion-datos">
-            <div class="sidebar">
-                <h3>Control de Rebaje</h3>
-                <div class="grid-inputs">
-                    <div class="field">
-                        <label style="color: #ff9f43;">Long. Der. (m)</label>
-                        <input type="number" id="longDer" value="12" step="0.1" inputmode="decimal">
+
+    <div class="slider-container" id="slider">
+        
+        <section class="slide">
+            <div class="card">
+                <h2>AVANCE</h2>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>L. Izquierda</label>
+                        <input type="number" id="av_lI" placeholder="0.0">
                     </div>
-                    <div class="field">
-                        <label style="color: #a29bfe;">Long. Izq (m)</label>
-                        <input type="number" id="longIzq" value="12" step="0.1" inputmode="decimal">
+                    <div class="input-group">
+                        <label>L. Derecha</label>
+                        <input type="number" id="av_lD" placeholder="0.0">
                     </div>
                 </div>
-                <hr>
-                <div class="grid-inputs">
-                    <div class="field"><label>Alt. Inicial</label><input type="number" id="hInicial" value="0.0" step="0.1" inputmode="decimal"></div>
-                    <div class="field"><label>Alt. 1</label><input type="number" id="hInter1" value="1.0" step="0.1" inputmode="decimal"></div>
-                    <div class="field"><label>Alt. 2</label><input type="number" id="hInter2" value="2.0" step="0.1" inputmode="decimal"></div>
-                    <div class="field"><label>Alt. Final</label><input type="number" id="hFinal" value="3.5" step="0.1" inputmode="decimal"></div>
+                
+                <label>Alturas (h1 - h6)</label>
+                <div class="input-grid heights">
+                    <input type="number" id="av_h1" placeholder="h1">
+                    <input type="number" id="av_h2" placeholder="h2">
+                    <input type="number" id="av_h3" placeholder="h3">
                 </div>
-                <hr>
-                <div class="field">
-                    <label>Ancho Base (m)</label>
-                    <input type="number" id="wBase" value="8.5" step="0.1" inputmode="decimal">
+                <div class="input-grid heights">
+                    <input type="number" id="av_h4" placeholder="h4">
+                    <input type="number" id="av_h5" placeholder="h5">
+                    <input type="number" id="av_h6" placeholder="h6">
                 </div>
-                <div class="field">
-                    <label>Tipo de Material</label>
-                    <div class="material-group">
-                        <button type="button" class="mat-btn active" data-val="2.0">FIRME</button>
-                        <button type="button" class="mat-btn" data-val="1.8">RELLENO</button>
-                    </div>
-                    <input type="hidden" id="tipoMaterial" value="2.0">
+
+                <button onclick="calcAvance()">CALCULAR AVANCE</button>
+                <div class="result" id="res_avance">0 Tn</div>
+
+                <div class="image-footer">
+                    <img src="img/Avance.svg" alt="Esquema Avance">
                 </div>
-                <div class="result-box">
-                    <label>Masa Total:</label>
-                    <div class="vol-val"><span id="resMasa">0</span> <small>Ton</small></div>
-                    <div id="resPendiente" class="info-pend">Pendiente: 0%</div>
-                </div>
-                <div class="swipe-hint">DESLIZA PARA VER DIBUJOS ➔</div>
             </div>
         </section>
 
-        <section class="slide-section" id="seccion-dibujos">
-            <div class="canvas-container">
-                <div class="canvas-wrapper">
-                    <small>VISTA ISOMÉTRICA (3D)</small>
-                    <canvas id="canvas3D"></canvas>
+        <section class="slide">
+            <div class="card">
+                <h2>REBAJE</h2>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>L. Izquierda</label>
+                        <input type="number" id="re_lI" placeholder="0.0">
+                    </div>
+                    <div class="input-group">
+                        <label>L. Derecha</label>
+                        <input type="number" id="re_lD" placeholder="0.0">
+                    </div>
                 </div>
-                <div class="canvas-wrapper">
-                    <small>PLANTA SUPERIOR (CENITAL)</small>
-                    <canvas id="canvasPlanta"></canvas>
+                <div class="button-row">
+                    <button class="btn-firme" onclick="calcRebaje(2.0)">FIRME (2.0)</button>
+                    <button class="btn-relleno" onclick="calcRebaje(1.68)">RELLENO (1.68)</button>
+                </div>
+                <div class="result" id="res_rebaje">0 Tn</div>
+
+                <div class="image-footer">
+                    <img src="img/ReAlceBaje.svg" alt="Esquema Rebaje">
                 </div>
             </div>
         </section>
+
+        <section class="slide">
+            <div class="card">
+                <h2>RECORTE</h2>
+                <div class="input-group">
+                    <label>Ancho (m)</label>
+                    <input type="number" id="rec_anch" placeholder="0.0">
+                </div>
+                <div class="input-group">
+                    <label>Longitud (m)</label>
+                    <input type="number" id="rec_lng" placeholder="0.0">
+                </div>
+                <div class="input-group">
+                    <label>Altura (m)</label>
+                    <input type="number" id="rec_alt" value="2.5">
+                </div>
+                <button onclick="calcRecorte()">CALCULAR RECORTE</button>
+                <div class="result" id="res_recorte">0 Tn</div>
+
+                <div class="image-footer">
+                    <img src="img/Recorte.svg" alt="Esquema Recorte">
+                </div>
+            </div>
+        </section>
+
     </div>
-    <script src="./JS/rebajes.js"></script>
+
+    <div class="dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <script src="./JS/script.js"></script>
 </body>
 </html>
