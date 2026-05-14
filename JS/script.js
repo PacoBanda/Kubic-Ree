@@ -1,10 +1,10 @@
 // --- ESTADO GLOBAL ---
 let currentIndex = 0;
-let currentDensity = 2.0; // Firme por defecto
+let currentDensity = 2.0; 
 const slider = document.getElementById('slider');
 const dots = document.querySelectorAll('.dot');
 
-// --- NAVEGACIÓN (FLECHAS Y SWIPE) ---
+// --- NAVEGACIÓN ---
 function goToSlide(index) {
     if (index < 0 || index > 2) return;
     currentIndex = index;
@@ -12,28 +12,44 @@ function goToSlide(index) {
     dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
 }
 
+// Navegación por flechas (Teclado)
 document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') goToSlide(currentIndex + 1);
     if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
 });
 
-// Navegación táctil (Swipe)
+// --- NUEVA NAVEGACIÓN TÁCTIL (SWIPE) REFORZADA ---
 let touchStartX = 0;
-let touchEndX = 0;
+let touchStartY = 0;
 
+// Escuchamos el inicio del toque en todo el documento
 document.addEventListener('touchstart', e => {
     touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
 }, {passive: true});
 
 document.addEventListener('touchend', e => {
-    touchEndX = e.changedTouches[0].screenX;
-    if (!isDragging) handleSwipe(); // Solo navega si no estamos moviendo un valor
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+    
+    // Solo disparamos el cambio de pantalla si NO estamos arrastrando un valor
+    if (!isDragging) {
+        handleSwipe(touchStartX, touchEndX, touchStartY, touchEndY);
+    }
 }, {passive: true});
 
-function handleSwipe() {
-    const swipeThreshold = 80;
-    if (touchStartX - touchEndX > swipeThreshold) goToSlide(currentIndex + 1);
-    if (touchEndX - touchStartX > swipeThreshold) goToSlide(currentIndex - 1);
+function handleSwipe(startX, endX, startY, endY) {
+    const diffX = startX - endX;
+    const diffY = startY - endY;
+    const threshold = 50; // Sensibilidad del swipe
+
+    // Comprobamos que el movimiento sea más horizontal que vertical
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (Math.abs(diffX) > threshold) {
+            if (diffX > 0) goToSlide(currentIndex + 1); // Izquierda
+            else goToSlide(currentIndex - 1); // Derecha
+        }
+    }
 }
 
 // --- SELECTOR DENSIDAD REBAJE ---
@@ -45,7 +61,7 @@ function setDensity(val, btnId) {
     calcRebaje();
 }
 
-// --- MOTOR GESTUAL ---
+// --- MOTOR GESTUAL (AJUSTE DE NÚMEROS) ---
 let isDragging = false;
 let activeBox = null;
 let startX, startY, baseE, baseD;
@@ -53,6 +69,8 @@ let startX, startY, baseE, baseD;
 document.querySelectorAll('.gestural-box').forEach(box => {
     box.addEventListener('mousedown', e => onStart(e, box, e.clientX, e.clientY));
     box.addEventListener('touchstart', e => {
+        // Detenemos la propagación para que el swipe global no se active al tocar una caja
+        e.stopPropagation(); 
         onStart(e, box, e.touches[0].clientX, e.touches[0].clientY);
     }, {passive: false});
 });
@@ -72,7 +90,7 @@ function onMove(x, y) {
     const dx = x - startX;
     const dy = startY - y;
 
-    // Recorrido largo: 60px para 1 unidad, 100px para 0.1 decimal
+    // Sensibilidad baja solicitada (60px y 100px)
     let nE = baseE + Math.round(dy / 60); 
     let nD = baseD + (Math.round(dx / 100) * 0.1);
     
@@ -95,12 +113,15 @@ function onEnd() {
 
 window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
 window.addEventListener('mouseup', onEnd);
+
 window.addEventListener('touchmove', e => {
     if (isDragging) {
+        // Bloquea el movimiento de la pantalla solo cuando estamos ajustando un valor
         if (e.cancelable) e.preventDefault();
         onMove(e.touches[0].clientX, e.touches[0].clientY);
     }
 }, {passive: false});
+
 window.addEventListener('touchend', onEnd);
 
 // --- LÓGICA DE CÁLCULO ---
@@ -122,7 +143,6 @@ function calcAvance() {
         let v = getVal(id); if(v > 0) { aSum += v; am++; }
     });
     let anchoMedia = (am === 0) ? 8.2 : (aSum / am);
-
     let total = Math.ceil((9.5 * lMedia * 2.0) + ((altMedia - 1.5) * (anchoMedia * lMedia) * 2.0));
     document.getElementById('res_avance').innerText = `${total} Tn`;
 }
@@ -140,7 +160,6 @@ function calcRebaje() {
         let v = getVal(id); if(v > 0) { aSum += v; am++; }
     });
     let anchoMedia = (am === 0) ? 8.0 : (aSum / am);
-
     let total = Math.ceil(lMedia * anchoMedia * altMedia * currentDensity);
     document.getElementById('res_rebaje').innerText = `${total} Tn`;
 }
