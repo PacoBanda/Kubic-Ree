@@ -13,12 +13,13 @@
         <section class="slide">
             <div class="card">
                 <h2>AVANCE</h2>
-                <label class="section-label">Anchuras y Alturas</label>
+                <label class="section-label">Anchuras</label>
                 <div class="input-grid">
                     <div class="gestural-box" data-id="av_a1"><label>a1</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="av_a2"><label>a2</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="av_a3"><label>a3</label><span class="val">0.0</span></div>
                 </div>
+                <label class="section-label">Alturas</label>
                 <div class="input-grid">
                     <div class="gestural-box" data-id="av_h1"><label>h1</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="av_h2"><label>h2</label><span class="val">0.0</span></div>
@@ -31,8 +32,8 @@
                 </div>
                 <label class="section-label">Longitudes</label>
                 <div class="input-grid">
-                    <div class="gestural-box" data-id="av_lI"><label>L. Izq</label><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="av_lD"><label>L. Der</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_lI"><label>Izquierda</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_lD"><label>Derecha</label><span class="val">0.0</span></div>
                 </div>
                 <div class="result-container">
                     <span class="result-label">TOTAL AVANCE</span>
@@ -49,20 +50,27 @@
                     <button class="mat-btn active" id="btn_firme" onclick="setDensity(2.0, 'btn_firme')">FIRME (2.0)</button>
                     <button class="mat-btn" id="btn_relleno" onclick="setDensity(1.68, 'btn_relleno')">RELLENO (1.68)</button>
                 </div>
-                <label class="section-label">Dimensiones</label>
+                <label class="section-label">Anchuras</label>
                 <div class="input-grid">
                     <div class="gestural-box" data-id="re_a1"><label>a1</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="re_a2"><label>a2</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="re_a3"><label>a3</label><span class="val">0.0</span></div>
                 </div>
+                <label class="section-label">Alturas (m)</label>
                 <div class="input-grid">
                     <div class="gestural-box" data-id="re_h1"><label>h1</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="re_h2"><label>h2</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="re_h3"><label>h3</label><span class="val">0.0</span></div>
                 </div>
                 <div class="input-grid">
-                    <div class="gestural-box" data-id="re_lI"><label>L. Izq</label><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="re_lD"><label>L. Der</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_h4"><label>h4</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_h5"><label>h5</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_h6"><label>h6</label><span class="val">0.0</span></div>
+                </div>
+                <label class="section-label">Longitudes</label>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="re_lI"><label>Izquierda</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_lD"><label>Derecha</label><span class="val">0.0</span></div>
                 </div>
                 <div class="result-container">
                     <span class="result-label" id="label_rebaje">TOTAL REBAJE (D: 2.0)</span>
@@ -75,10 +83,12 @@
         <section class="slide">
             <div class="card">
                 <h2>RECORTE</h2>
-                <label class="section-label">Ajuste de Medidas</label>
-                <div class="gestural-box full" data-id="rec_anch"><label>Ancho (m)</label><span class="val">0.0</span></div>
-                <div class="gestural-box full" data-id="rec_lng"><label>Longitud (m)</label><span class="val">0.0</span></div>
-                <div class="gestural-box full" data-id="rec_alt"><label>Altura (m)</label><span class="val">0.0</span></div>
+                <label class="section-label">Ancho</label>
+                <div class="gestural-box full" data-id="rec_anch"><label>Ancho</label><span class="val">0.0</span></div>
+                <label class="section-label">Longitud</label>
+                <div class="gestural-box full" data-id="rec_lng"><label>Longitud</label><span class="val">0.0</span></div>
+                <label class="section-label">Alto</label>
+                <div class="gestural-box full" data-id="rec_alt"><label>Altura</label><span class="val">0.0</span></div>
                 
                 <div class="result-container">
                     <span class="result-label">TOTAL RECORTE</span>

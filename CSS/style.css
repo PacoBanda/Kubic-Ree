@@ -1,11 +1,11 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: 'Segoe UI', sans-serif; background-color: #000; color: #fff; overflow: hidden; }
 
-.slider-container { display: flex; width: 300vw; height: 100vh; transition: transform 0.4s ease-out; }
+.slider-container { display: flex; width: 300vw; height: 100vh; transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); }
 .slide { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; }
 
 .card { 
-    background: #1a1a1a; width: 100%; max-width: 400px; padding: 20px; 
+    background: #1a1a1a; width: 100%; max-width: 420px; padding: 20px; 
     border-radius: 24px; display: flex; flex-direction: column; border: 1px solid #333; 
 }
 
@@ -14,33 +14,33 @@ h2 { color: #03dac6; text-align: center; margin-bottom: 10px; font-size: 1.4rem;
 .material-selector { display: flex; gap: 8px; margin-bottom: 15px; }
 .mat-btn { 
     flex: 1; background: #222; border: 1px solid #444; color: #666; 
-    padding: 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; cursor: pointer; 
+    padding: 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; cursor: pointer; transition: 0.3s;
 }
 .mat-btn.active { border-color: #03dac6; color: #03dac6; background: #03dac610; }
 
-.section-label { font-size: 0.6rem; color: #555; margin: 10px 0 5px; text-transform: uppercase; letter-spacing: 1px; }
-.input-grid { display: flex; gap: 10px; margin-bottom: 8px; }
+.section-label { font-size: 0.65rem; color: #666; margin: 10px 0 5px; text-transform: uppercase; letter-spacing: 1px; }
+.input-grid { display: flex; gap: 8px; margin-bottom: 8px; }
 
 .gestural-box { 
     flex: 1; background: #222; border: 1px solid #333; border-radius: 12px; 
     padding: 12px 5px; display: flex; flex-direction: column; align-items: center; 
-    touch-action: none; user-select: none; transition: 0.2s; 
+    touch-action: none; user-select: none; transition: background 0.2s, border-color 0.2s; 
 }
-.gestural-box.full { margin-bottom: 10px; padding: 20px; }
-.gestural-box.active { border-color: #03dac6; background: #03dac610; transform: scale(1.02); }
+.gestural-box.full { margin-bottom: 10px; padding: 18px; }
+.gestural-box.active { border-color: #03dac6; background: #03dac615; }
 
 .gestural-box label { font-size: 0.6rem; color: #03dac6; margin-bottom: 4px; font-weight: bold; }
-.gestural-box .val { font-size: 1.4rem; font-weight: bold; color: #fff; }
+.gestural-box .val { font-size: 1.3rem; font-weight: bold; color: #fff; }
 
 .result-container { 
-    margin-top: 15px; padding: 15px; background: #252525; 
+    margin-top: 15px; padding: 15px; background: #222; 
     border-radius: 18px; text-align: center; border: 1px solid #333; 
 }
-.result-label { display: block; font-size: 0.65rem; color: #03dac6; margin-bottom: 5px; font-weight: bold; }
+.result-label { display: block; font-size: 0.7rem; color: #03dac6; margin-bottom: 5px; font-weight: bold; }
 .result { font-size: 1.8rem; color: #fff; font-weight: bold; }
 
-.image-footer img { max-height: 50px; filter: invert(1); opacity: 0.4; display: block; margin: 15px auto 0; }
+.image-footer img { max-height: 100px; filter: invert(1); opacity: 0.3; display: block; margin: 15px auto 0; }
 
-.dots { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
-.dot { width: 6px; height: 6px; background: #333; border-radius: 50%; transition: 0.3s; }
-.dot.active { background: #03dac6; width: 20px; border-radius: 3px; }
+.dots { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+.dot { width: 8px; height: 8px; background: #333; border-radius: 50%; transition: 0.3s; }
+.dot.active { background: #03dac6; width: 24px; border-radius: 4px; }
