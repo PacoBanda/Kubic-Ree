@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kubicar Web - Real Time Gestual</title>
+    <title>Kubicar Web - Pure Gestual</title>
     <link rel="stylesheet" href="./CSS/style.css">
 </head>
 <body>
@@ -33,14 +33,16 @@
                     <div class="gestural-box" data-id="av_h6"><label>h6</label><span class="val">0.0</span></div>
                 </div>
 
-                <label class="section-label">3. Longitudes (Control Directo)</label>
+                <label class="section-label">3. Longitudes</label>
                 <div class="input-grid">
                     <div class="gestural-box" data-id="av_lI"><label>L. Izq</label><span class="val">0.0</span></div>
                     <div class="gestural-box" data-id="av_lD"><label>L. Der</label><span class="val">0.0</span></div>
                 </div>
 
-                <button onclick="calcAvance()">CALCULAR AVANCE</button>
-                <div class="result" id="res_avance">0 Tn</div>
+                <div class="result-container">
+                    <span class="result-label">TOTAL AVANCE</span>
+                    <div class="result" id="res_avance">0 Tn</div>
+                </div>
 
                 <div class="image-footer">
                     <img src="img/Avance.svg" alt="Avance">
@@ -77,11 +79,10 @@
                     <div class="gestural-box" data-id="re_lD"><label>L. Der</label><span class="val">0.0</span></div>
                 </div>
 
-                <div class="button-row">
-                    <button class="btn-firme" onclick="calcRebaje(2.0)">FIRME (2.0)</button>
-                    <button class="btn-relleno" onclick="calcRebaje(1.68)">RELLENO (1.68)</button>
+                <div class="result-container">
+                    <span class="result-label">TOTAL REBAJE (D: 2.0)</span>
+                    <div class="result" id="res_rebaje">0 Tn</div>
                 </div>
-                <div class="result" id="res_rebaje">0 Tn</div>
 
                 <div class="image-footer">
                     <img src="img/ReAlceBaje.svg" alt="Rebaje">
@@ -97,8 +98,10 @@
                 <div class="gestural-box full" data-id="rec_lng"><label>Longitud (m)</label><span class="val">0.0</span></div>
                 <div class="gestural-box full" data-id="rec_alt"><label>Altura (m)</label><span class="val">2.5</span></div>
                 
-                <button onclick="calcRecorte()">CALCULAR RECORTE</button>
-                <div class="result" id="res_recorte">0 Tn</div>
+                <div class="result-container">
+                    <span class="result-label">TOTAL RECORTE</span>
+                    <div class="result" id="res_recorte">0 Tn</div>
+                </div>
 
                 <div class="image-footer">
                     <img src="img/Recorte.svg" alt="Recorte">

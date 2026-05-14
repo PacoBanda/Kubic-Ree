@@ -1,4 +1,4 @@
-// --- SISTEMA DE NAVEGACIÓN ---
+// --- NAVEGACIÓN ---
 let currentIndex = 0;
 const slider = document.getElementById('slider');
 const dots = document.querySelectorAll('.dot');
@@ -11,13 +11,13 @@ function goToSlide(index) {
     dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
 }
 
-// Teclado PC
+// Navegación teclado
 window.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') goToSlide(currentIndex + 1);
     if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
 });
 
-// Swipe Móvil (Solo si no estamos arrastrando una caja)
+// Swipe navegación
 let touchStartX = 0;
 window.addEventListener('touchstart', e => {
     if (!e.target.closest('.gestural-box')) {
@@ -35,7 +35,7 @@ window.addEventListener('touchend', e => {
     }
 }, {passive: true});
 
-// --- CONTROL GESTUAL + TIEMPO REAL ---
+// --- MOTOR GESTUAL TIEMPO REAL ---
 let isDragging = false;
 let activeBox = null;
 let startX, startY, baseE, baseD;
@@ -51,7 +51,6 @@ function onStart(e, box, x, y) {
     activeBox.classList.add('active');
     startX = x;
     startY = y;
-
     const v = parseFloat(activeBox.querySelector('.val').innerText) || 0;
     baseE = Math.floor(v);
     baseD = v - baseE;
@@ -63,21 +62,18 @@ function onMove(x, y) {
     const dx = x - startX;
     const dy = startY - y;
 
-    // Sensibilidad: 15px para subir un entero, 20px para un decimal
-    let nE = baseE + Math.round(dy / 15);
-    let nD = baseD + (Math.round(dx / 20) * 0.1);
+    let nE = baseE + Math.round(dy / 50);
+    let nD = baseD + (Math.round(dx / 30) * 0.1);
 
-    // Límites
     nE = Math.max(0, Math.min(100, nE));
     nD = Math.max(0, Math.min(0.9, nD));
 
-    const finalVal = (nE + nD).toFixed(1);
-    activeBox.querySelector('.val').innerText = finalVal;
+    activeBox.querySelector('.val').innerText = (nE + nD).toFixed(1);
 
-    // EJECUTAR CÁLCULO EN TIEMPO REAL
+    // Disparar cálculos según sección
     const id = activeBox.dataset.id;
     if (id.startsWith('av')) calcAvance();
-    else if (id.startsWith('re')) calcRebaje(2.0); // 2.0 por defecto en real time
+    else if (id.startsWith('re')) calcRebaje(2.0); 
     else if (id.startsWith('rec')) calcRecorte();
 }
 
@@ -87,7 +83,6 @@ function onEnd() {
     activeBox = null;
 }
 
-// Listeners Globales
 window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
 window.addEventListener('mouseup', onEnd);
 window.addEventListener('touchmove', e => {
@@ -98,8 +93,7 @@ window.addEventListener('touchmove', e => {
 }, {passive: false});
 window.addEventListener('touchend', onEnd);
 
-// --- FUNCIONES DE CÁLCULO ---
-
+// --- CÁLCULOS ---
 function getVal(id) {
     const box = document.querySelector(`.gestural-box[data-id="${id}"]`);
     return box ? parseFloat(box.querySelector('.val').innerText) : 0;
@@ -121,9 +115,8 @@ function calcAvance() {
     });
     let anchoMedia = (am === 0) ? 8.2 : (aSum / am);
 
-    let boveda = 9.5 * lMedia * 2.0;
-    let galeria = (altMedia - 1.5) * (anchoMedia * lMedia) * 2.0;
-    document.getElementById('res_avance').innerText = `${Math.ceil(boveda + galeria)} Tn`;
+    let total = Math.ceil((9.5 * lMedia * 2.0) + ((altMedia - 1.5) * (anchoMedia * lMedia) * 2.0));
+    document.getElementById('res_avance').innerText = `${total} Tn`;
 }
 
 function calcRebaje(densidad) {
@@ -142,7 +135,8 @@ function calcRebaje(densidad) {
     });
     let anchoMedia = (am === 0) ? 8.0 : (aSum / am);
 
-    document.getElementById('res_rebaje').innerText = `${Math.ceil(lMedia * anchoMedia * altMedia * densidad)} Tn`;
+    let total = Math.ceil(lMedia * anchoMedia * altMedia * densidad);
+    document.getElementById('res_rebaje').innerText = `${total} Tn`;
 }
 
 function calcRecorte() {

@@ -31,31 +31,31 @@ body {
     background: #1a1a1a;
     width: 100%;
     max-width: 400px;
-    padding: 15px 20px;
-    border-radius: 20px;
+    padding: 20px;
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
+    border: 1px solid #333;
 }
 
-h2 { color: #03dac6; text-align: center; margin-bottom: 5px; font-size: 1.5rem; }
+h2 { color: #03dac6; text-align: center; margin-bottom: 5px; font-size: 1.4rem; letter-spacing: 1px; }
 
 .section-label { 
     font-size: 0.6rem; 
-    color: #888; 
-    margin: 10px 0 4px 0; 
+    color: #666; 
+    margin: 12px 0 6px 0; 
     text-transform: uppercase; 
     letter-spacing: 1px;
 }
 
-.input-grid { display: flex; gap: 8px; margin-bottom: 6px; }
+.input-grid { display: flex; gap: 10px; margin-bottom: 8px; }
 
-/* CAJA TÁCTIL */
 .gestural-box {
     flex: 1;
     background: #222;
     border: 1px solid #333;
     border-radius: 12px;
-    padding: 10px 5px;
+    padding: 12px 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,45 +65,44 @@ h2 { color: #03dac6; text-align: center; margin-bottom: 5px; font-size: 1.5rem; 
     transition: all 0.2s;
 }
 
-.gestural-box.full { margin-bottom: 8px; padding: 18px; }
+.gestural-box.full { margin-bottom: 10px; padding: 20px; }
 
 .gestural-box.active {
     border-color: #03dac6;
     background: #03dac615;
-    transform: scale(1.02);
+    transform: scale(1.03);
+    box-shadow: 0 0 15px rgba(3, 218, 198, 0.1);
 }
 
-.gestural-box label { font-size: 0.6rem; color: #03dac6; margin-bottom: 3px; }
-.gestural-box .val { font-size: 1.3rem; font-weight: bold; }
+.gestural-box label { font-size: 0.6rem; color: #03dac6; margin-bottom: 4px; font-weight: bold; }
+.gestural-box .val { font-size: 1.4rem; font-weight: bold; color: #fff; }
 
-/* BOTONES */
-button {
-    width: 100%; padding: 14px; border-radius: 12px; border: none;
-    background: #03dac6; font-weight: bold; margin-top: 10px; color: #000;
-    transition: opacity 0.3s, transform 0.1s;
-    opacity: 0.7;
+/* CONTENEDOR DE RESULTADO (Sustituye al botón) */
+.result-container {
+    margin-top: 15px;
+    padding: 15px;
+    background: #252525;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid #333;
 }
 
-.button-row { display: flex; gap: 8px; }
-.btn-relleno { background: #cf6679; }
-
-/* Iluminar botones cuando se interactúa */
-.gestural-box.active ~ button,
-.gestural-box.active ~ .button-row button {
-    opacity: 1;
+.result-label {
+    display: block;
+    font-size: 0.65rem;
+    color: #03dac6;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
 .result { 
-    text-align: center; 
-    font-size: 1.6rem; 
-    color: #03dac6; 
-    margin: 15px 0; 
-    font-weight: bold; 
-    text-shadow: 0 0 10px rgba(3, 218, 198, 0.3);
+    font-size: 1.8rem; 
+    color: #fff; 
+    font-weight: bold;
 }
 
-.image-footer img { max-height: 60px; filter: invert(1); opacity: 0.6; display: block; margin: 5px auto; }
+.image-footer img { max-height: 50px; filter: invert(1); opacity: 0.4; display: block; margin: 15px auto 0; }
 
 .dots { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
 .dot { width: 6px; height: 6px; background: #444; border-radius: 50%; transition: 0.3s; }
-.dot.active { background: #03dac6; width: 20px; border-radius: 3px; }
+.dot.active { background: #03dac6; width: 22px; border-radius: 3px; }
