@@ -1,22 +1,21 @@
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     -webkit-tap-highlight-color: transparent;
 }
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background-color: #0f0f0f;
-    color: white;
-    overflow: hidden; /* Evita scroll vertical */
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
 }
 
 .slider-container {
     display: flex;
-    width: 300vw; /* 3 pantallas */
+    width: 300vw;
     height: 100vh;
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: transform 0.4s ease-out;
 }
 
 .slide {
@@ -25,120 +24,61 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 15px;
+    padding: 10px;
 }
 
 .card {
     background: #1a1a1a;
     width: 100%;
     max-width: 400px;
-    height: 90vh; /* Ajuste para móviles */
     padding: 20px;
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
 }
 
-h2 {
-    text-align: center;
-    color: #03dac6;
-    font-size: 1.4rem;
-    margin-bottom: 15px;
-}
+h2 { color: #03dac6; text-align: center; margin-bottom: 5px; }
 
-.input-grid {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
+.section-label { font-size: 0.65rem; color: #888; margin: 8px 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }
 
-.input-group {
+.input-grid { display: flex; gap: 8px; margin-bottom: 6px; }
+
+.gestural-box {
     flex: 1;
-}
-
-label {
-    display: block;
-    font-size: 0.75rem;
-    color: #aaa;
-    margin-bottom: 4px;
-}
-
-input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
+    background: #222;
     border: 1px solid #333;
-    background: #252525;
-    color: white;
-    font-size: 1rem;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+    user-select: none;
 }
+
+.gestural-box.full { margin-bottom: 10px; padding: 15px; }
+
+.gestural-box.active {
+    border-color: #03dac6;
+    background: #03dac615;
+}
+
+.gestural-box label { font-size: 0.6rem; color: #03dac6; margin-bottom: 2px; }
+.gestural-box .val { font-size: 1.2rem; font-weight: bold; }
 
 button {
-    width: 100%;
-    padding: 15px;
-    border-radius: 15px;
-    border: none;
-    background: #03dac6;
-    color: black;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 10px;
+    width: 100%; padding: 14px; border-radius: 12px; border: none;
+    background: #03dac6; font-weight: bold; margin-top: 10px; color: #000;
 }
 
-.button-row {
-    display: flex;
-    gap: 10px;
-}
+.button-row { display: flex; gap: 8px; }
+.btn-relleno { background: #cf6679; }
 
-.btn-relleno {
-    background: #cf6679;
-}
+.result { text-align: center; font-size: 1.3rem; color: #03dac6; margin: 12px 0; font-weight: bold; }
 
-.result {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #03dac6;
-    margin: 15px 0;
-    padding: 10px;
-    border-top: 1px solid #333;
-}
+.image-footer img { max-height: 60px; filter: invert(1); opacity: 0.7; display: block; margin: 5px auto; }
 
-/* Imagen abajo */
-.image-footer {
-    margin-top: auto; /* Empuja al fondo */
-    text-align: center;
-    padding: 10px;
-}
-
-.image-footer img {
-    max-height: 120px;
-    width: auto;
-    filter: brightness(0.8) invert(1); /* Invertir si tus SVG son negros */
-}
-
-/* Puntos de navegación */
-.dots {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    background: #444;
-    border-radius: 50%;
-    transition: 0.3s;
-}
-
-.dot.active {
-    background: #03dac6;
-    width: 20px;
-    border-radius: 4px;
-}
+.dots { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+.dot { width: 6px; height: 6px; background: #444; border-radius: 50%; transition: 0.3s; }
+.dot.active { background: #03dac6; width: 18px; border-radius: 3px; }

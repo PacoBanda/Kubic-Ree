@@ -1,4 +1,4 @@
-// CONTROL DE NAVEGACIÓN
+// --- NAVEGACIÓN ---
 let currentIndex = 0;
 const slider = document.getElementById('slider');
 const dots = document.querySelectorAll('.dot');
@@ -8,78 +8,133 @@ function goToSlide(index) {
     if (index > 2) index = 2;
     currentIndex = index;
     slider.style.transform = `translateX(-${currentIndex * 100}vw)`;
-    
-    // Actualizar puntos
-    dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === currentIndex);
-    });
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIndex));
 }
 
-// Eventos de teclado (PC)
-window.addEventListener('keydown', (e) => {
+// Teclado PC
+window.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') goToSlide(currentIndex + 1);
     if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1);
 });
 
-// Eventos táctiles (Móvil)
+// Swipe Móvil (Navegación)
 let touchStartX = 0;
-window.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+window.addEventListener('touchstart', e => {
+    if (!e.target.closest('.gestural-box')) {
+        touchStartX = e.changedTouches[0].screenX;
+    }
+}, {passive: true});
+
 window.addEventListener('touchend', e => {
+    if (e.target.closest('.gestural-box')) return;
     let touchEndX = e.changedTouches[0].screenX;
     let diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 50) { // Umbral de 50px
+    if (Math.abs(diff) > 80) {
         if (diff > 0) goToSlide(currentIndex + 1);
         else goToSlide(currentIndex - 1);
     }
+}, {passive: true});
+
+// --- CONTROL GESTUAL DIRECTO ---
+let isDragging = false;
+let activeBox = null;
+let startX, startY, baseE, baseD;
+
+document.querySelectorAll('.gestural-box').forEach(box => {
+    box.addEventListener('mousedown', e => onStart(e, box, e.clientX, e.clientY));
+    box.addEventListener('touchstart', e => onStart(e, box, e.touches[0].clientX, e.touches[0].clientY), {passive: false});
 });
 
-// LÓGICA DE CÁLCULO (Extraída de tus archivos Kotlin)
+function onStart(e, box, x, y) {
+    isDragging = true;
+    activeBox = box;
+    activeBox.classList.add('active');
+    startX = x;
+    startY = y;
+
+    const v = parseFloat(activeBox.querySelector('.val').innerText) || 0;
+    baseE = Math.floor(v);
+    baseD = v - baseE;
+}
+
+function onMove(x, y) {
+    if (!isDragging || !activeBox) return;
+
+    const dx = x - startX;
+    const dy = startY - y;
+
+    let nE = baseE + Math.round(dy / 15);
+    let nD = baseD + (Math.round(dx / 20) * 0.1);
+
+    nE = Math.max(0, Math.min(100, nE));
+    nD = Math.max(0, Math.min(0.9, nD));
+
+    activeBox.querySelector('.val').innerText = (nE + nD).toFixed(1);
+}
+
+window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+window.addEventListener('mouseup', onEnd);
+window.addEventListener('touchmove', e => {
+    if (isDragging) {
+        if (e.cancelable) e.preventDefault();
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+}, {passive: false});
+window.addEventListener('touchend', onEnd);
+
+function onEnd() {
+    if (activeBox) activeBox.classList.remove('active');
+    isDragging = false;
+    activeBox = null;
+}
+
+// --- CÁLCULOS ---
+function getVal(id) {
+    const box = document.querySelector(`.gestural-box[data-id="${id}"]`);
+    return box ? parseFloat(box.querySelector('.val').innerText) : 0;
+}
 
 function calcAvance() {
-    const lI = parseFloat(document.getElementById('av_lI').value) || 0;
-    const lD = parseFloat(document.getElementById('av_lD').value) || 0;
-    
-    // Cálculo de L Media
-    let lm = (lI > 0 ? 1 : 0) + (lD > 0 ? 1 : 0) || 1;
-    let lMedia = (lI + lD) / lm;
+    const lI = getVal('av_lI'), lD = getVal('av_lD');
+    let lMedia = (lI + lD) / ((lI > 0 ? 1 : 0) + (lD > 0 ? 1 : 0) || 1);
 
-    // Cálculo de Altura Media (h1-h6)
     let hSum = 0, hm = 0;
-    for (let i = 1; i <= 6; i++) {
-        let val = parseFloat(document.getElementById(`av_h${i}`).value) || 0;
-        if (val > 0) { hSum += val; hm++; }
-    }
+    ['av_h1','av_h2','av_h3','av_h4','av_h5','av_h6'].forEach(id => {
+        let v = getVal(id); if(v > 0) { hSum += v; hm++; }
+    });
     let altMedia = (hm === 0) ? 5.1 : (hSum / hm);
 
-    const areaBoveda = 9.5;
-    const densidad = 2.0;
-    const anchoMedia = 8.2;
+    let aSum = 0, am = 0;
+    ['av_a1','av_a2','av_a3'].forEach(id => {
+        let v = getVal(id); if(v > 0) { aSum += v; am++; }
+    });
+    let anchoMedia = (am === 0) ? 8.2 : (aSum / am);
 
-    let boveda = areaBoveda * lMedia * densidad;
-    let galeria = (altMedia - 1.5) * (anchoMedia * lMedia) * densidad;
-    let total = Math.ceil(boveda + galeria);
-
-    document.getElementById('res_avance').innerText = 
-        `${Math.ceil(boveda)} + ${Math.ceil(galeria)} = ${total} Tn`;
+    let boveda = 9.5 * lMedia * 2.0;
+    let galeria = (altMedia - 1.5) * (anchoMedia * lMedia) * 2.0;
+    document.getElementById('res_avance').innerText = `${Math.ceil(boveda + galeria)} Tn`;
 }
 
 function calcRebaje(densidad) {
-    const lI = parseFloat(document.getElementById('re_lI').value) || 0;
-    const lD = parseFloat(document.getElementById('re_lD').value) || 0;
-    
-    let lm = (lI > 0 ? 1 : 0) + (lD > 0 ? 1 : 0) || 1;
-    let lMedia = (lI + lD) / lm;
+    const lI = getVal('re_lI'), lD = getVal('re_lD');
+    let lMedia = (lI + lD) / ((lI > 0 ? 1 : 0) + (lD > 0 ? 1 : 0) || 1);
 
-    // Usando valores fijos de tus fragmentos (Ancho: 8.0, Altura: 2.0)
-    let resultado = Math.ceil(lMedia * 8.0 * 2.0 * densidad);
-    document.getElementById('res_rebaje').innerText = `${resultado} Tn`;
+    let hSum = 0, hm = 0;
+    ['re_h1','re_h2','re_h3','re_h4','re_h5','re_h6'].forEach(id => {
+        let v = getVal(id); if(v > 0) { hSum += v; hm++; }
+    });
+    let altMedia = (hm === 0) ? 2.0 : (hSum / hm);
+
+    let aSum = 0, am = 0;
+    ['re_a1','re_a2','re_a3'].forEach(id => {
+        let v = getVal(id); if(v > 0) { aSum += v; am++; }
+    });
+    let anchoMedia = (am === 0) ? 8.0 : (aSum / am);
+
+    document.getElementById('res_rebaje').innerText = `${Math.ceil(lMedia * anchoMedia * altMedia * densidad)} Tn`;
 }
 
 function calcRecorte() {
-    const anch = parseFloat(document.getElementById('rec_anch').value) || 0;
-    const lng = parseFloat(document.getElementById('rec_lng').value) || 0;
-    const alt = parseFloat(document.getElementById('rec_alt').value) || 0;
-
-    let resultado = Math.ceil(lng * anch * alt);
-    document.getElementById('res_recorte').innerText = `${resultado} Tn`;
+    const anch = getVal('rec_anch'), lng = getVal('rec_lng'), alt = getVal('rec_alt');
+    document.getElementById('res_recorte').innerText = `${Math.ceil(lng * anch * alt)} Tn`;
 }

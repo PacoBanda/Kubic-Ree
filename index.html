@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kubicar Web</title>
+    <title>Kubicar Web - Gestual Directo</title>
     <link rel="stylesheet" href="./CSS/style.css">
 </head>
 <body>
@@ -13,34 +13,37 @@
         <section class="slide">
             <div class="card">
                 <h2>AVANCE</h2>
-                <div class="input-grid">
-                    <div class="input-group">
-                        <label>L. Izquierda</label>
-                        <input type="number" id="av_lI" placeholder="0.0">
-                    </div>
-                    <div class="input-group">
-                        <label>L. Derecha</label>
-                        <input type="number" id="av_lD" placeholder="0.0">
-                    </div>
-                </div>
                 
-                <label>Alturas (h1 - h6)</label>
-                <div class="input-grid heights">
-                    <input type="number" id="av_h1" placeholder="h1">
-                    <input type="number" id="av_h2" placeholder="h2">
-                    <input type="number" id="av_h3" placeholder="h3">
+                <label class="section-label">1. Anchuras (a1 - a3)</label>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="av_a1"><label>a1</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_a2"><label>a2</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_a3"><label>a3</label><span class="val">0.0</span></div>
                 </div>
-                <div class="input-grid heights">
-                    <input type="number" id="av_h4" placeholder="h4">
-                    <input type="number" id="av_h5" placeholder="h5">
-                    <input type="number" id="av_h6" placeholder="h6">
+
+                <label class="section-label">2. Alturas (h1 - h6)</label>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="av_h1"><label>h1</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_h2"><label>h2</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_h3"><label>h3</label><span class="val">0.0</span></div>
+                </div>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="av_h4"><label>h4</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_h5"><label>h5</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_h6"><label>h6</label><span class="val">0.0</span></div>
+                </div>
+
+                <label class="section-label">3. Longitudes (Máximo Espacio)</label>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="av_lI"><label>L. Izq</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="av_lD"><label>L. Der</label><span class="val">0.0</span></div>
                 </div>
 
                 <button onclick="calcAvance()">CALCULAR AVANCE</button>
                 <div class="result" id="res_avance">0 Tn</div>
 
                 <div class="image-footer">
-                    <img src="img/Avance.svg" alt="Esquema Avance">
+                    <img src="img/Avance.svg" alt="Avance">
                 </div>
             </div>
         </section>
@@ -48,16 +51,32 @@
         <section class="slide">
             <div class="card">
                 <h2>REBAJE</h2>
+
+                <label class="section-label">1. Anchuras (a1 - a3)</label>
                 <div class="input-grid">
-                    <div class="input-group">
-                        <label>L. Izquierda</label>
-                        <input type="number" id="re_lI" placeholder="0.0">
-                    </div>
-                    <div class="input-group">
-                        <label>L. Derecha</label>
-                        <input type="number" id="re_lD" placeholder="0.0">
-                    </div>
+                    <div class="gestural-box" data-id="re_a1"><label>a1</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_a2"><label>a2</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_a3"><label>a3</label><span class="val">0.0</span></div>
                 </div>
+
+                <label class="section-label">2. Alturas (h1 - h6)</label>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="re_h1"><label>h1</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_h2"><label>h2</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_h3"><label>h3</label><span class="val">0.0</span></div>
+                </div>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="re_h4"><label>h4</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_h5"><label>h5</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_h6"><label>h6</label><span class="val">0.0</span></div>
+                </div>
+
+                <label class="section-label">3. Longitudes</label>
+                <div class="input-grid">
+                    <div class="gestural-box" data-id="re_lI"><label>L. Izq</label><span class="val">0.0</span></div>
+                    <div class="gestural-box" data-id="re_lD"><label>L. Der</label><span class="val">0.0</span></div>
+                </div>
+
                 <div class="button-row">
                     <button class="btn-firme" onclick="calcRebaje(2.0)">FIRME (2.0)</button>
                     <button class="btn-relleno" onclick="calcRebaje(1.68)">RELLENO (1.68)</button>
@@ -65,7 +84,7 @@
                 <div class="result" id="res_rebaje">0 Tn</div>
 
                 <div class="image-footer">
-                    <img src="img/ReAlceBaje.svg" alt="Esquema Rebaje">
+                    <img src="img/ReAlceBaje.svg" alt="Rebaje">
                 </div>
             </div>
         </section>
@@ -73,23 +92,15 @@
         <section class="slide">
             <div class="card">
                 <h2>RECORTE</h2>
-                <div class="input-group">
-                    <label>Ancho (m)</label>
-                    <input type="number" id="rec_anch" placeholder="0.0">
-                </div>
-                <div class="input-group">
-                    <label>Longitud (m)</label>
-                    <input type="number" id="rec_lng" placeholder="0.0">
-                </div>
-                <div class="input-group">
-                    <label>Altura (m)</label>
-                    <input type="number" id="rec_alt" value="2.5">
-                </div>
+                <div class="gestural-box full" data-id="rec_anch"><label>Ancho (m)</label><span class="val">0.0</span></div>
+                <div class="gestural-box full" data-id="rec_lng"><label>Longitud (m)</label><span class="val">0.0</span></div>
+                <div class="gestural-box full" data-id="rec_alt"><label>Altura (m)</label><span class="val">2.5</span></div>
+                
                 <button onclick="calcRecorte()">CALCULAR RECORTE</button>
                 <div class="result" id="res_recorte">0 Tn</div>
 
                 <div class="image-footer">
-                    <img src="img/Recorte.svg" alt="Esquema Recorte">
+                    <img src="img/Recorte.svg" alt="Recorte">
                 </div>
             </div>
         </section>
