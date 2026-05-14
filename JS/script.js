@@ -51,8 +51,12 @@ function onMove(x, y) {
     const dx = x - startX;
     const dy = startY - y;
 
-    let nE = baseE + Math.round(dy / 8); 
-    let nD = baseD + (Math.round(dx / 10) * 0.1);
+    // --- AJUSTE DE RECORRIDO LARGO ---
+    // dy/60 significa que mueves 60px para cambiar 1 entero
+    // dx/100 significa que mueves 100px para cambiar 0.1 decimal
+    let nE = baseE + Math.round(dy / 60); 
+    let nD = baseD + (Math.round(dx / 100) * 0.1);
+    
     nE = Math.max(0, Math.min(100, nE));
     nD = Math.max(0, Math.min(0.9, nD));
 
@@ -127,5 +131,8 @@ function calcRecorte() {
     const l = getVal('rec_lng');
     const h = getVal('rec_alt');
     const total = Math.ceil(a * l * h);
-    document.getElementById('res_recorte').innerText = `${total} Tn`;
+    
+    // Forzamos actualización inmediata
+    const target = document.getElementById('res_recorte');
+    if(target) target.innerText = `${total} Tn`;
 }
