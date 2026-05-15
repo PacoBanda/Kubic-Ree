@@ -1,110 +1,175 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kubicar Gestual Pro</title>
-    <link rel="stylesheet" href="./CSS/style.css">
-</head>
-<body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Kubicar Gestual</title>
+    <link rel="stylesheet" href="./CSS/style.css" />
+  </head>
+  <body>
     <div class="slider-container" id="slider">
-        
-        <section class="slide">
-            <div class="card">
-                <h2>AVANCE</h2>
-                <label class="section-label">Anchuras</label>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="av_a1"><span class="val">8.2</span></div>
-                    <div class="gestural-box" data-id="av_a2"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="av_a3"><span class="val">0.0</span></div>
-                </div>
-                <label class="section-label">Alturas</label>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="av_h1"><span class="val">5.1</span></div>
-                    <div class="gestural-box" data-id="av_h2"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="av_h3"><span class="val">0.0</span></div>
-                </div>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="av_h4"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="av_h5"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="av_h6"><span class="val">0.0</span></div>
-                </div>
-                <label class="section-label">Longitudes</label>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="av_lI"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="av_lD"><span class="val">0.0</span></div>
-                </div>
-                <div class="result-container">
-                    
-                    <div class="result" id="res_avance">0 Tn</div>
-                </div>
-                <div class="image-footer"><img src="img/Avance.svg" alt="Avance"></div>
+      <section class="slide">
+        <div class="card">
+          <h2>AVANCE</h2>
+          <label class="section-label">Anchuras</label>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="av_a1">
+              <span class="val">8.2</span>
             </div>
-        </section>
+            <div class="gestural-box" data-id="av_a2">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="av_a3">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <label class="section-label">Alturas</label>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="av_h1">
+              <span class="val">5.1</span>
+            </div>
+            <div class="gestural-box" data-id="av_h2">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="av_h3">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="av_h4">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="av_h5">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="av_h6">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <label class="section-label">Longitudes</label>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="av_lI">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="av_lD">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <div class="result-container">
+            <div class="result" id="res_avance">0 Tn</div>
+          </div>
+          <div class="image-footer">
+            <img src="img/Avance.svg" alt="Avance" />
+          </div>
+        </div>
+      </section>
 
-        <section class="slide">
-            <div class="card">
-                <h2>REBAJE</h2>
-                <div class="material-selector">
-                    <button class="mat-btn active" id="btn_firme" onclick="setDensity(2.0, 'btn_firme')">FIRME (2.0)</button>
-                    <button class="mat-btn" id="btn_relleno" onclick="setDensity(1.68, 'btn_relleno')">RELLENO (1.68)</button>
-                </div>
-                <label class="section-label">Anchuras</label>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="re_a1"><span class="val">8.0</span></div>
-                    <div class="gestural-box" data-id="re_a2"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="re_a3"><span class="val">0.0</span></div>
-                </div>
-                <label class="section-label">Alturas (m)</label>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="re_h1"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="re_h2"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="re_h3"><span class="val">0.0</span></div>
-                </div>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="re_h4"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="re_h5"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="re_h6"><span class="val">0.0</span></div>
-                </div>
-                <label class="section-label">Longitudes</label>
-                <div class="input-grid">
-                    <div class="gestural-box" data-id="re_lI"><span class="val">0.0</span></div>
-                    <div class="gestural-box" data-id="re_lD"><span class="val">0.0</span></div>
-                </div>
-                <div class="result-container">
-                    
-                    <div class="result" id="res_rebaje">0 Tn</div>
-                </div>
-                <div class="image-footer"><img src="img/ReAlceBaje.svg" alt="Rebaje"></div>
+      <section class="slide">
+        <div class="card">
+          <h2>REBAJE</h2>
+          <div class="material-selector">
+            <button
+              class="mat-btn active"
+              id="btn_firme"
+              onclick="setDensity(2.0, 'btn_firme')"
+            >
+              FIRME (2.0)
+            </button>
+            <button
+              class="mat-btn"
+              id="btn_relleno"
+              onclick="setDensity(1.68, 'btn_relleno')"
+            >
+              RELLENO (1.68)
+            </button>
+          </div>
+          <label class="section-label">Anchuras</label>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="re_a1">
+              <span class="val">8.0</span>
             </div>
-        </section>
+            <div class="gestural-box" data-id="re_a2">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="re_a3">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <label class="section-label">Alturas (m)</label>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="re_h1">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="re_h2">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="re_h3">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="re_h4">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="re_h5">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="re_h6">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <label class="section-label">Longitudes</label>
+          <div class="input-grid">
+            <div class="gestural-box" data-id="re_lI">
+              <span class="val">0.0</span>
+            </div>
+            <div class="gestural-box" data-id="re_lD">
+              <span class="val">0.0</span>
+            </div>
+          </div>
+          <div class="result-container">
+            <div class="result" id="res_rebaje">0 Tn</div>
+          </div>
+          <div class="image-footer">
+            <img src="img/ReAlceBaje.svg" alt="Rebaje" />
+          </div>
+        </div>
+      </section>
 
-        <section class="slide">
-            <div class="card">
-                <h2>RECORTE</h2>
-                <label class="section-label">Ancho</label>
-                <div class="gestural-box full" data-id="rec_anch"><span class="val">0.0</span></div>
-                <label class="section-label">Longitud</label>
-                <div class="gestural-box full" data-id="rec_lng"><span class="val">0.0</span></div>
-                <label class="section-label">Alto</label>
-                <div class="gestural-box full" data-id="rec_alt"><span class="val">0.0</span></div>
-                
-                <div class="result-container">
-                    
-                    <div class="result" id="res_recorte">0 Tn</div>
-                </div>
-                <div class="image-footer"><img src="img/Recorte.svg" alt="Recorte"></div>
-            </div>
-        </section>
+      <section class="slide">
+        <div class="card">
+          <h2>RECORTE</h2>
+          <label class="section-label">Ancho</label>
+          <div class="gestural-box full" data-id="rec_anch">
+            <span class="val">0.0</span>
+          </div>
+          <label class="section-label">Alto</label>
+          <div class="gestural-box full" data-id="rec_alt">
+            <span class="val">0.0</span>
+          </div>
+          <label class="section-label">Longitud</label>
+          <div class="gestural-box full" data-id="rec_lng">
+            <span class="val">0.0</span>
+          </div>
+          <div class="result-container">
+            <div class="result" id="res_recorte">0 Tn</div>
+          </div>
+          <div class="image-footer">
+            <img src="img/Recorte.svg" alt="Recorte" />
+          </div>
+        </div>
+      </section>
     </div>
 
     <div class="dots">
-        <div class="dot active"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
     </div>
 
     <script src="./JS/script.js"></script>
-</body>
+  </body>
 </html>
